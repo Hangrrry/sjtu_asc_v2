@@ -19,7 +19,7 @@ import datetime
 import os
 
 # 全局变量
-stop_flag = 0
+stop_flag = Float64()
 # ----------------------------------------------------------------------
 # 定义相关矩阵
 # 相机内参矩阵
@@ -109,7 +109,7 @@ _time = 0
 num_list = []
 # ----------------------------------------------------------------------
 # 定义天井的位置信息
-cropTensorList = [(0, 0), (0, 0), (0, 0), (0, 0)]
+cropTensorList = cropTensorList = [[0, 0], [0, 0], [0, 0], [0, 0]]
 
 
 def auto_rotate(img):  
@@ -273,6 +273,7 @@ def plot(result):
     return cropTensors
 
 def cls_predict():
+    global cropTensorList
     cropTensors = plot(result)
     for j, cropTensor in enumerate(cropTensors):
         framet = cropTarget(result.orig_img, cropTensor, 320, 640)
@@ -287,7 +288,7 @@ def cls_predict():
                 rotate_num += 1
                 cv2.imwrite(f"/home/amov/Desktop/well{folder_name}/rotate/{rotate_num}.png", framet)
                 apply_num_rec_package(framet)
-                imgdata = pos.Imgdata(image=result, pos=[local_x, local_y, local_z], coordinate=coordinate, num=num, time=_time, yaw = local_yaw)
+                imgdata = pos.Imgdata(image=result, pos=[local_x, local_y, local_z], coordinate=coordinate, num=num, time=_time, yaw = local_yaw,cropTensorList=cropTensorList)
                 dataList.append(imgdata)
                 # cv2.imshow("img_num" + str(j), img_num)
             else:
@@ -312,6 +313,7 @@ def coordinate_change(height=20, pos_=[0, 0, 20], yaw=0):
     height = 20
 
     # u, v 是天井像素坐标系坐标
+    global cropTensorList
     well_width = (cropTensorList[0][0] + cropTensorList[2][0]) // 2
     well_height = (cropTensorList[0][1] + cropTensorList[2][1]) // 2
     # 用于调节相机畸变， 但此处未使用(后续看如何增加使用)
@@ -368,10 +370,11 @@ def rotate_around_x():
         [0, 0, -1]
     ])
 
-def coordinate_change2(height=25, pos_=[0, 0, 25], yaw=0):
+def coordinate_change2(height=25, pos_=[0, 0, 25], yaw=0,cropTensorList=[[0, 0], [0, 0], [0, 0], [0, 0]]):
     # u, v 是天井像素坐标系坐标(记住要先去畸变，或者先不去畸变试试)
-    well_width = 960#(cropTensorList[0][0] + cropTensorList[2][0]) // 2
-    well_height = 540#(cropTensorList[0][1] + cropTensorList[2][1]) // 2
+    global cropTensorList
+    well_width = (cropTensorList[0][0] + cropTensorList[2][0]) // 2
+    well_height = (cropTensorList[0][1] + cropTensorList[2][1]) // 2
 
     # 通过ros获取飞行的高度以及X与Y的值  此处默认设置为20
     X0 = pos_[0]
@@ -383,9 +386,9 @@ def coordinate_change2(height=25, pos_=[0, 0, 25], yaw=0):
                        [well_height],
                        [1]])
     with open(f'/home/amov/Desktop/well{folder_name}/output.txt', 'a') as file:
-        file.write("the plane's yaw is: ", yaw)
-        file.write("the plane's position is: ", pos_)
-        file.write("the target in pixel is: ", target)
+        file.write(f"the plane's yaw is: {str(yaw)}")
+        file.write(f"the plane's position is: {str(pos_)}")
+        file.write(f"the target in pixel is: {str(target)}")
         
 
     # height为相机到地面高度值
@@ -446,7 +449,7 @@ if __name__=="__main__":
     rospy.init_node("vision_node")
     rate = rospy.Rate(10)
     cap = cv2.VideoCapture(0)
-    cap.set(cv2.CAP_PROP_FPS, 330)
+    cap.set(cv2.CAP_PROP_FPS, 30)
     cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1920)
     cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 1080)
 
@@ -499,9 +502,9 @@ if __name__=="__main__":
         # print("type middle_num is; " + str(type(middle_num)) + " get_num type is: " + str(type(dataList[k].get_num())))
         #print("dataList[k].get_pos() is: " + dataList[k].get_pos()[0]+ " type is: " + str(type(dataList[k].get_pos())))
         if middle_num == int(dataList[k].get_num()):
-            zero_pose[0] += coordinate_change2(height= 25, pos_ = [0,0,25], yaw = dataList[k].get_yaw())[0]#coordinate_change2(height= dataList[k].get_pos()[2], pos_ = dataList[k].get_pos(), yaw = dataList[k].get_yaw())[0]
-            zero_pose[1] += coordinate_change2(height= 25, pos_ = [0,0,25], yaw = dataList[k].get_yaw())[1]#coordinate_change2(height= dataList[k].get_pos()[2], pos_ = dataList[k].get_pos(), yaw = dataList[k].get_yaw())[1]
-            zero_pose[2] += coordinate_change2(height= 25, pos_ = [0,0,25], yaw = dataList[k].get_yaw())[2]#coordinate_change2(height= dataList[k].get_pos()[2], pos_ = dataList[k].get_pos(), yaw = dataList[k].get_yaw())[2]
+            zero_pose[0] += coordinate_change2(height= 25, pos_ = [0,0,25], yaw = dataList[k].get_yaw(),cropTensorList=dataList[k].get_cropTensorList())[0]#coordinate_change2(height= dataList[k].get_pos()[2], pos_ = dataList[k].get_pos(), yaw = dataList[k].get_yaw())[0]
+            zero_pose[1] += coordinate_change2(height= 25, pos_ = [0,0,25], yaw = dataList[k].get_yaw(),cropTensorList=dataList[k].get_cropTensorList())[1]#coordinate_change2(height= dataList[k].get_pos()[2], pos_ = dataList[k].get_pos(), yaw = dataList[k].get_yaw())[1]
+            zero_pose[2] += coordinate_change2(height= 25, pos_ = [0,0,25], yaw = dataList[k].get_yaw(),cropTensorList=dataList[k].get_cropTensorList())[2]#coordinate_change2(height= dataList[k].get_pos()[2], pos_ = dataList[k].get_pos(), yaw = dataList[k].get_yaw())[2]
             middle_ += 1
             #print("middle_ += 1")
     final_pos = [zero_pose[0] / middle_, zero_pose[1] / middle_, zero_pose[2] / middle_]

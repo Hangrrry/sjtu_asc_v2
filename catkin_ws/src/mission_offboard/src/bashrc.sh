@@ -150,7 +150,7 @@ export PATH=$PATH:/usr/bin/python
 alias et="rostopic echo"
 alias lt="rostopic list"
 alias cm="cd catkin_ws/;catkin_make"
-alias px4="roslaunch mavros px4.launch fcu_url:=serial:///dev/ttyTHS1:921600 gcs_url:=udp://@192.168.0.0 "
+alias px4="roslaunch mavros px4.launch"
 alias AA="rosrun A A |tee  record`date  +_%Y_%m_%d_%H_%M_%S`.txt"
 alias codeA="roscd A; cd src; code A.cpp"
 alias ss="cd ~;source .bashrc"
@@ -181,4 +181,5 @@ alias cvsh="cd ~/catkin_ws/src/mission_offboard/src;code vision.sh"
 alias vsh="cd ~/catkin_ws/src/mission_offboard/src;./vision.sh"
 alias np="cd /home/amov/tst/src/vision_pose/scripts;conda activate yolov8;python new_pos.py"
 alias codenp="cd /home/amov/tst/src/vision_pose/scripts;conda activate yolov8; code new_pos.py"
+
 source /home/amov/catkin_ws/devel/setup.bash;
