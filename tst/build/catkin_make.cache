@@ -1,0 +1,2 @@
+vision_pose
+-DCATKIN_DEVEL_PREFIX=/home/amov/tst/devel -DCMAKE_INSTALL_PREFIX=/home/amov/tst/install -G Unix Makefiles

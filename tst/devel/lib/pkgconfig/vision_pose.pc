@@ -1,0 +1,8 @@
+prefix=/home/amov/tst/devel
+
+Name: vision_pose
+Description: Description of vision_pose
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 
