@@ -8,7 +8,7 @@ class Imgdata(object):
         self.yaw = yaw
         self.cropTensorList = cropTensorList
 
-    @staticmethodcropTensorList
+    @staticmethod
     def make_struct(image, pos, coordinate, num, time, yaw,cropTensorList):
         return Imgdata(image, pos, coordinate, num, time, yaw)
 

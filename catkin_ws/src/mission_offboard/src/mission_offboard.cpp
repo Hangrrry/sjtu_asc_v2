@@ -194,6 +194,8 @@ int main(int argc, char **argv)
 	ros::Publisher vision_stop_pub = nh.advertise<std_msgs::Float64>("vision_stop_flag", 10);
 	ros::Publisher target_pos_pub = nh.advertise<geometry_msgs::PoseStamped>("/mavros/setpoint_position/local", 10);
 	ros::Publisher thrust_pub = nh.advertise<mavros_msgs::Thrust>("/mavros/setpoint_attitude/thrust", 10);
+	ros::Publisher send_pub = nh.advertise<std_msgs::Float64>("send_topic", 10);
+
 	ros::ServiceClient arming_client = nh.serviceClient<mavros_msgs::CommandBool>("/mavros/cmd/arming");
 	ros::ServiceClient set_mode_client = nh.serviceClient<mavros_msgs::SetMode>("/mavros/set_mode");
 	ros::Rate rate(60.0);
@@ -431,6 +433,9 @@ int main(int argc, char **argv)
 		case 3:
 			distance = sqrt((local_pos.pose.position.x - target.pose.position.x) * (local_pos.pose.position.x - target.pose.position.x) + (local_pos.pose.position.y - target.pose.position.y) * (local_pos.pose.position.y - target.pose.position.y));
 			ROS_INFO("mission mode22222");
+			std_msgs::Float64 send_flag;
+			send_flag.data=777.777;
+			send_pub.publish(send_flag);
 			break;
 		}
 

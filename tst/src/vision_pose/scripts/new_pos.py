@@ -109,7 +109,7 @@ _time = 0
 num_list = []
 # ----------------------------------------------------------------------
 # 定义天井的位置信息
-cropTensorList = cropTensorList = [[0, 0], [0, 0], [0, 0], [0, 0]]
+cropTensorList = [[0, 0], [0, 0], [0, 0], [0, 0]]
 
 
 def auto_rotate(img):  
@@ -313,7 +313,6 @@ def coordinate_change(height=20, pos_=[0, 0, 20], yaw=0):
     height = 20
 
     # u, v 是天井像素坐标系坐标
-    global cropTensorList
     well_width = (cropTensorList[0][0] + cropTensorList[2][0]) // 2
     well_height = (cropTensorList[0][1] + cropTensorList[2][1]) // 2
     # 用于调节相机畸变， 但此处未使用(后续看如何增加使用)
@@ -372,7 +371,6 @@ def rotate_around_x():
 
 def coordinate_change2(height=25, pos_=[0, 0, 25], yaw=0,cropTensorList=[[0, 0], [0, 0], [0, 0], [0, 0]]):
     # u, v 是天井像素坐标系坐标(记住要先去畸变，或者先不去畸变试试)
-    global cropTensorList
     well_width = (cropTensorList[0][0] + cropTensorList[2][0]) // 2
     well_height = (cropTensorList[0][1] + cropTensorList[2][1]) // 2
 
